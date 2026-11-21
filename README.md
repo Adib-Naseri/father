@@ -1,84 +1,91 @@
 # father
 
-A voice and a standard for AI agents, in one file and no dependencies.
+A portable instruction kit for AI agents: one standing-orders file and seven
+skills, verbatim from a working install. No dependencies, no framework, no
+model. Text you put in front of a model, and it behaves better.
 
-Most agent instructions fail in two directions: they flatter ("great question!")
-or they scold. Father does neither. It is a small, portable instruction layer
-that makes an agent take the work seriously — steady acceptance, one named
-standard, one next step — and then get out of the way.
+Built for **father** — a voice and a standard: steady acceptance, one named
+standard, one next step, no flattery, no shame, no vanishing when the work
+fails. Carries **ponytail** alongside it: the lazy senior dev that ships the
+smallest change that fully works. Father governs the voice; ponytail governs the
+size. They do not argue.
 
-It is not a model, a framework, or a wrapper. It is text you put in front of a
-model. It works on any of them.
+## Contents
 
-## What it actually changes
-
-The **three gifts**:
-
-1. **Acceptance, unearned** — said once, then dropped. Repeated reassurance is a
-   debt, not a gift.
-2. **A standard, named** — the exact thing that would make the work good, not
-   "do better." A standard nobody can see is a trap.
-3. **The next step, singular** — one action, doable now, chosen because it most
-   reduces uncertainty.
-
-Plus three registers it moves between:
-
-| Register | When | Shape |
-|---|---|---|
-| **steady** | default | acceptance, truth, one next step |
-| **hard** | you are slipping or avoiding the real work | truth first, what ignoring it costs, one hard step |
-| **proud** | the thing was actually done | name what was good, once; then the next step |
-
-And hard limits, stated in the file itself: never flatter, never shame, never
-lecture twice, never rescue work you can do alone, never vanish when the work
-fails. **It never loosens safety, security, or validation to keep a promise
-short**, and it never overrides harness policy or your explicit instruction.
-
-## The files
-
-| File | What it is |
+| Path | What it is |
 |---|---|
-| `SKILL.md` | The full text, with skill frontmatter. The canonical version. |
-| `AGENTS.md` | The short standing-orders version — the shape without the essay. |
-| `CLAUDE.md` | Thin pointer for Claude Code (which reads `CLAUDE.md`, not `AGENTS.md`). |
+| `AGENTS.md` | Standing orders. Short enough to load every turn. |
+| `skills/father/SKILL.md` | The full father text: three gifts, registers, hard limits. |
+| `skills/ponytail/SKILL.md` | Lazy senior dev mode, levels lite/full/ultra. |
+| `skills/ponytail-audit/` | Whole-repo quality audit, ranked. |
+| `skills/ponytail-review/` | Review one change: logic, safety, load, tests, speed. |
+| `skills/ponytail-debt/` | Ledger of every deferred shortcut. |
+| `skills/ponytail-gain/` | Measured savings from the benchmark. |
+| `skills/ponytail-help/` | Quick reference for levels and commands. |
+| `install.sh` | Symlinks (or copies) everything into a harness. |
+| `NOTICE` | Provenance and licensing for third-party files. |
 
-`SKILL.md` and `AGENTS.md` say the same thing at two sizes. Ship one or both; they
-do not conflict.
+## Install
 
-## Install it anywhere
+```bash
+git clone git@github.com:Adib-Naseri/father.git
+cd father
+./install.sh ~/.dsh/skills        # DeepSeek Harness
+./install.sh ~/.claude/skills     # Claude Code
+./install.sh --copy ~/.codex/skills
+```
 
-**Any chat model** (ChatGPT custom instructions, Gemini gem, a system prompt in
-an API call): copy everything from the `# Father` heading to the end of
-`SKILL.md`, paste it as a system/instruction block. Skip the YAML frontmatter.
+`AGENTS.md` is placed in the parent of the target directory. Use `--no-agents` to
+skip it, `--force` to replace what is already there.
 
-**Claude Code**: drop `CLAUDE.md` into the repo root, or append it to
+Symlinking is the default on purpose: **one source of truth**. Edit the clone,
+every harness sees the change, and `diff` is the proof. Copy mode is for tools
+that refuse symlinks — accept then that you own the drift.
+
+### Harnesses that read AGENTS.md
+
+Codex, Cursor, and anything AGENTS-aware: copy `AGENTS.md` to the project root,
+or to the tool's global agent file. That single file is the whole register; the
+skills are the deep version.
+
+### Claude Code
+
+`CLAUDE.md` in this repo is a pointer. Drop it in a project root, or append it to
 `~/.claude/CLAUDE.md` for every session.
 
-**Codex, Cursor, and anything that reads `AGENTS.md`**: copy `AGENTS.md` to the
-repo root, or to the global agent file for your tool.
+### Plain chat models
 
-**Claude Skills / DSH / skill-loading harnesses**: put this directory in your
-skills path (`~/.dsh/skills/father/` for DeepSeek Harness, `~/.claude/skills/`
-for Claude). The frontmatter is already correct — `name`, `description`,
-`license`.
+Copy `skills/father/SKILL.md` from the `# Father` heading down — skip the YAML
+frontmatter — and paste it into custom instructions or a system prompt. That is
+the entire install for ChatGPT, Gemini, or a raw API call.
 
-**Anything else**: paste the body of `SKILL.md` where the model reads its
-instructions. That is the whole install.
+## Verify it landed
 
-## Using it
+Zero output means the installed copy is identical to this repo:
 
-Say any of: `father`, `father mode`, `dad mode`, `no coddling`, `hold me to it`,
-or just ask for honest feedback instead of encouragement. The `description` field
-in `SKILL.md` is written so that skill-selecting harnesses pick it up on those
-phrases without you naming it.
+```bash
+for f in skills/*/SKILL.md; do
+  diff "$f" ~/.dsh/skills/$(basename "$(dirname "$f")")/SKILL.md
+done
+```
 
-## One honest caveat
+## What this will not do
 
-This is a **register**, not a capability. It changes how the agent talks and what
-it refuses to call finished. It does not make a weak model correct, and it cannot
-compensate for a bad spec. Expect better-shaped answers, sharper questions, and
-fewer unearned "done" claims — not a different engine.
+This is a **register, not a capability**. It changes how an agent talks and what
+it refuses to call finished. It does not make a weak model correct, and it
+cannot fix a bad spec. Expect sharper questions, fewer unearned "done" claims,
+and replies shaped like the work instead of like encouragement. Nothing more.
+
+## Security
+
+`skills/father/.perch/` was deliberately excluded: it holds a Perch project
+manual and an `mcp.json` containing a **plaintext third-party API key** plus a
+machine-local absolute path. Secrets and machine paths do not belong in a public
+repo. If you fork the source install, check that directory before publishing and
+rotate anything that leaked.
 
 ## License
 
-MIT. See `LICENSE`.
+MIT — see `LICENSE`. Six ponytail skills are vendored MIT from
+[DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) v5.3.3;
+see `NOTICE` for provenance and copyright.

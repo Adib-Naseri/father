@@ -1,0 +1,4 @@
+.perch/
+.DS_Store
+*.local
+.env*

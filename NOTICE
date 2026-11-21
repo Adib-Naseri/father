@@ -1,0 +1,26 @@
+Third-party content
+===================
+
+The files under skills/ponytail/, skills/ponytail-audit/, skills/ponytail-debt/,
+skills/ponytail-gain/, skills/ponytail-help/ and skills/ponytail-review/ are
+vendored, unmodified, from:
+
+  Project:  ponytail
+  Source:   https://github.com/DietrichGebert/ponytail
+  Version:  5.3.3
+  Commit:   96608e078b2d5ea607c5c3b8b5a54d1c1fba6846
+  License:  MIT
+
+Copyright remains with the original author. They are included here for
+convenience so the kit is self-contained; upstream is the source of truth for
+those six files. If you change them, you are forking them.
+
+Everything else in this repository — AGENTS.md, skills/father/SKILL.md,
+README.md, install.sh — is original work by Adib Naseri, MIT licensed (LICENSE).
+
+Deliberately excluded
+=====================
+
+skills/father/.perch/ is not included. It contains a Perch project manual and an
+mcp.json with a plaintext third-party API key. Secrets do not belong in a public
+repository, and neither does a machine-specific absolute path.
